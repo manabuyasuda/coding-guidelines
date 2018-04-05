@@ -60,14 +60,13 @@
 - namespace
 
 ### baseレイヤー
-baseレイヤーは変数や関数をまとめた子レイヤーと、要素セレクタのデフォルトスタイルやNormarize.cssなどのベースになるスタイルを
-指定します。
+baseレイヤーは変数や関数をまとめた子レイヤーと、要素セレクタのデフォルトスタイルやNormarize.cssなどのベースになるスタイルを配置します。
 
 #### base/_normarize.scss
-Normalize.cssです。一般的なリセットCSSは`outline`プロパティを削除してしまうなどのデメリットもあります。必要最小限の平準化だけをするNormalize.cssを使用します。
+[Normalize.css](https://necolas.github.io/normalize.css/)です。一般的なリセットCSSは`outline`プロパティを削除してしまうなどのデメリットもあるので、必要最小限の平準化だけをするNormalize.cssを使用します。
 
 #### base/_base.scss
-_base.scssは`html`タグの`box-sizing: border-box;`や`font-size`の指定などをしています。モジュールを作成するときの上書きが頻発しないように必要最小限のスタイルを指定します。
+_base.scssは要素セレクタの最低限のスタイルやリセットをします。モジュールを作成するときにスタイルの上書きが頻発しないようにします。
 
 #### base/variable/
 サイト共通の変数を格納します。例えば以下のようなものです。
@@ -100,6 +99,9 @@ namespaceモジュールの雛形になるmixinはbase/mixin/namespace/sitewide/
 - namespace/layout/ ：モジュールを配置・レイアウトするためのレイアウトモジュール
 - namespace/home/ ：ホームページでだけ使用されるモジュール
 
+### _print.scss
+印刷用のCSSです。
+
 ## 名前空間（namespace）
 namespaceモジュールにはECSSの考えをベースに名前空間（namespace）をつけます。  
 sitewideとstructureとlayout以外は基本的に省略をしません。
@@ -109,18 +111,20 @@ sitewideとstructureとlayout以外は基本的に省略をしません。
 - namespace/layout/ ：`.l-`
 - namespace/home/ ：`.home-`
 
-見た目が似ているかだけではなく、情報設計とビジュアルデザインも含めて共通化するのが適切なのか認識をあわせてから共通化をします。  
+見た目が同じ・似ているから共通化するのではなく、情報設計とビジュアルデザインも含めて共通化するのが適切なのかを検討してください。  
 もし、今後別の見た目や仕様になりそうなのであれば、名前空間をわけて別のモジュールとして管理します。
+
+sitewideとstructureとlayoutにするモジュールは1人で決めず、ディレクター・デザイナー・エンジニアで話し合いをして追加してください。
 
 ## 命名規則
 命名規則はECSSの考えをベースにします。
 
-```
-namespace-ModuleName_ChildNode-variant
-namespace-ComponentName_ChildNode-variant
+```scss
+.namespace-ModuleName_ChildNode-variant {}
+.namespace-ComponentName_ChildNode-variant {}
 ```
 
-基本的には以下のような関係性になります。
+基本的には以下のような親子関係になります。
 
 ```
 ModuleName > ComponentName > ChildNode
@@ -129,7 +133,7 @@ ModuleName > ComponentName > ChildNode
 ただし、名前からはModuleNameなのかComponentNameなのかは判断できないことも多いのでそれほど気にする必要はありません。
 
 ### パーシャルファイル
-名前空間でディレクトリをわけて、その中にModuleとComponentごとにパーシャルファイルを作ります。ChildNodeとvariantはそれに紐づくパーシャルファイルに記述します。
+名前空間でディレクトリをわけて、その中にModuleとComponentごとに（アンダースコアからはじまる）パーシャルファイルを作ります。ChildNodeとvariantはそれに紐づくパーシャルファイルに記述します。
 
 ```scss
 // namespace/sitewide/_Button.scss
@@ -175,12 +179,12 @@ variantはChildNodeに指定してもいいですが、HTMLでの管理がしに
 ```
 
 ### 状態変化
-クリック時などの状態変化があった場合は以下の優先度でvariantを指定してください。
+クリック時などの動的な状態変化があった場合は以下の優先度で指定してください。
 
-1. `aria-*`などの標準的なセレクタ
+1. `aria-*`などの標準的な属性セレクタ
 2. variant
 
-#### `aria-*`などの標準的なセレクタ
+#### `aria-*`などの標準的な属性セレクタ
 `aria-expanded`や`aria-hidden`のような属性を使用している場合は、CSSのセレクタにも使用してください。
 
 ```scss
@@ -233,6 +237,8 @@ $breakpoint-up: (
   }
 }
 ```
+
+ブレイクポイントでの変化のパターンが1つに決まっている場合はCSSだけで完結させます。
 
 ### キーセレクタ
 あるセレクタのルールセット（`{}`）の中に、他のキーセレクタ（実際に適応されるセレクタ）が入らないようにしてください。
@@ -340,46 +346,48 @@ CSSの構文はセレクタとブレース、プロパティと値で構成さ�
 - ローカル変数は最初に定義
 - extendはローカル変数の次に指定
 - mixinはextendの次に指定
-- contentを使用しているmixinは最後に指定
+- contentを使用しているmixinは適切な位置に指定
 - 演算は常に括弧（`()`）で囲む
 - 括弧内のカンマ（`,`）と値の間にスペースを1つ
+- メディアクエリや擬似要素など別のセレクタが生成される場合は空行を1つ
 
 ```scss
 // Good
 .ns-Foo, .ns-Foo--Bar,
 .ns-Baz {
-  $_padding: 1em;
+  $padding: 1em;
   @extend %base-unit;
-  @include _clearfix;
+  @include clearfix;
   display: block;
   margin-right: auto;
   margin-left: auto;
-  padding-right: $_padding;
-  padding-left: $_padding;
+  padding-right: $padding;
+  padding-left: $padding;
   backgrouond-color: rgba(0, 0, 0, 0.7);
-  @include _mq-up(md) {
-    padding-right: ($_padding * 2);
-    padding-left: ($_padding * 2);
+
+  @include mq-up(md) {
+    padding-right: ($padding * 2);
+    padding-left: ($padding * 2);
   }
 }
 
 // Bad
 .ns-Foo,
 .ns-Foo--Bar, .ns-Baz{
-    @include _mq-up_(md) {
-        padding-right: $_padding * 2;
-        padding-left: $_padding * 2;
+    @include mq-up(md) {
+        padding-right: $padding * 2;
+        padding-left: $padding * 2;
     }
     display: block;margin-right: auto;
     backgrouond-color: rgba(0,0,0,0.7);
     margin-left:auto;
     @extend %base-unit;
-    @include _clearfix;
-    $_padding: 1em;}
+    @include clearfix;
+    $padding: 1em;}
 ```
 
 #### 単一行ルールセットのフォーマット
-原則的には複数行でルールセットを記述しますが、汎用クラスなどの単一のスタイルの場合は1行で記述することもできます。
+原則的には複数行でルールセットを記述しますが、単一のスタイルの場合は1行で記述することもできます。
 
 単一行のフォーマットは以下の通りです。
 
@@ -391,9 +399,9 @@ CSSの構文はセレクタとブレース、プロパティと値で構成さ�
 
 ```scss
 // Good
-.u-text-right { text-align: right !important; }
-.u-text-center { text-align: center !important; }
-.u-text-left { text-align: left !important; }
+.ns-Grid_Item-col2 { width: percentage(1 / 2); }
+.ns-Grid_Item-col3 { width: percentage(1 / 3); }
+.ns-Grid_Item-col4 { width: percentage(1 / 4); }
 ```
 
 #### プロパティの宣言順
@@ -406,11 +414,11 @@ CSSの構文はセレクタとブレース、プロパティと値で構成さ�
 - 色に関するプロパティ（`color`, `background-color`など）
 - それ以外
 
-アルファベット順には記述しません。プロパティをアルファベット順で書いていくのは難しいと思いますし読みにくいとも思います。例えば`position`プロパティで位置の指定をする場合に`top`と`left`が離れてしまいます。
+書きやすさと読みやすさを考えてアルファベット順では書きません。例えばアルファベット順では`position`プロパティで位置の指定をする場合に`top`と`left`が離れてしまい、読みにくくなってしまいます。
 
 ```scss
 // Good
-.foo {
+.ns-Foo {
   display: block;
   position: absolute; // 親要素に対して、
   top: 0;
@@ -424,7 +432,7 @@ CSSの構文はセレクタとブレース、プロパティと値で構成さ�
 }
 
 // Bad
-.foo {
+.ns-Foo {
   background-color: #fff;
   color: #000;
   display: block;
@@ -439,23 +447,21 @@ CSSの構文はセレクタとブレース、プロパティと値で構成さ�
 ```
 
 #### 個別指定プロパティの宣言順
-`margin`や`position`のように上下左右に個別に指定できるプロパティは時計回りで記述をすることで規則性をもたせます。
+`margin`や`position`のように上下左右に個別に指定できるプロパティは時計回り（上・右・下・左）で記述をすることで規則性をもたせます。
 
 ```scss
 // Good
-.foo {
-  margin-top: auto;
+.ns-Foo {
+  margin-top: 30px;
   margin-right: auto;
-  margin-bottom: auto;
   margin-left: auto;
 }
 
 // Bad
-.foo {
+.ns-Foo {
   margin-left: auto;
   margin-right: auto;
-  margin-top: auto;
-  margin-bottom: auto;
+  margin-top: 30px;
 }
 ```
 
@@ -464,10 +470,10 @@ colorプロパティなどで色を指定する時は可読性をあげるため
 
 ```scss
 // Good
-.foo { color: #ddd; }
+.ns-Foo { color: #ddd; }
 
 // Bad
-.foo { color: #dddddd; }
+.ns-Foo { color: #dddddd; }
 ```
 
 #### 文字列には引用符（ダブルクォート）をつける
@@ -475,14 +481,14 @@ contentプロパティやURLの指定、属性セレクタの指定をする時�
 
 ```scss
 // Good
-.foo {
+.ns-Foo {
   content: "this is content";
   background: url("logo.png");
 }
 input[type="submit"] {}
 
 // Bad
-.foo {
+.ns-Foo {
   content: 'this is content';
   background: url(logo.png);
 }
@@ -495,33 +501,33 @@ input[type='submit'] {}
 
 ```scss
 // Good
-.foo { margin: 0; }
+.ns-Foo { margin: 0; }
 
 // Bad
-.foo { margin: 0px; }
+.ns-Foo { margin: 0px; }
 ```
 
 ただし、角度（`deg`,`grad`,`rad`,`turn`）や時間（`s`,`ms`）では単位の省略をすることができないので注意します。
 
 #### すべて小文字で記述する
-プロパティとプロパティ値は大文字でも小文字でも同様に扱われますが、小文字に統一します。
+プロパティとプロパティ値は大文字でも小文字でも同様に扱われますが、小文字で統一します。
 
 ```scss
 // Good
-.foo { color: #fff; }
+.ns-Foo { color: #fff; }
 
 // Bad
-.foo { COLOR: #FFF; }
+.ns-Foo { COLOR: #FFF; }
 ```
 
 #### ショートハンドはなるべく避ける
-`font-size`や`margin`などのショートハンドプロパティの使用は必要がなければ避けます。ショートハンドプロパティに渡さなかったプロパティに初期値が指定されてしまい、思わぬスタイルが当たってしまう恐れがあります。
+`font-size`や`margin`などのショートハンドプロパティの使用は必要がなければ避けます。ショートハンドプロパティに渡さなかったプロパティに初期値が指定されてしまい、思わぬスタイルが当たってしまう恐れがあるからです。
 
-必要なプロパティにだけ指定するほうがコードの目的も分かりやすくなります。
+必要なプロパティにだけ指定するほうがコードの意図もわかりやすくなります。
 
 ```scss
 // Good
-.foo {
+.ns-Foo {
   // 中央配置にする。
   margin-right: auto;
   margin-left: auto;
@@ -529,7 +535,7 @@ input[type='submit'] {}
 
 // Bad
 // 上下を0に指定する必要がない。
-.foo { margin: 0 auto; }
+.ns-Foo { margin: 0 auto; }
 ```
 
 #### 変数にはdefaultフラグを指定する
@@ -545,7 +551,7 @@ $unit-base: 1em;
 
 ### セレクタ
 #### インライン記述を使用しない
-HTMLのstyle属性にスタイルを記述することは禁止します。HTMLには見た目に関する情報を極力書かないようにします。クラスを振ったほうが柔軟にスタイルを変更することができます。JavaScriptを使う場合もstyle属性を使いません。
+HTMLのstyle属性にスタイルを記述することを避けます。HTMLには見た目に関する情報を極力書かないようにします。クラスを振ったほうが柔軟にスタイルを変更することができます。JavaScriptを使う場合もstyle属性を避けてください。
 
 ```html
 <!-- Bad -->
@@ -553,25 +559,28 @@ HTMLのstyle属性にスタイルを記述することは禁止します。HTML�
 ```
 
 #### HTMLの構造に依存させない
-要素セレクタに対してスタイルを指定すると、構造が変更されたときにスタイルが崩れてしまう恐れがあります。
+要素セレクタに対してスタイルを指定すると、HTMLの構造が変更されたときにスタイルが崩れてしまう恐れがあります。
 
 ```scss
 // Bad
 article h2 {}
 ```
 
-クラスセレクタであれば、指定している要素に関係なくスタイルが適応されるので、使い回しがしやすくなります。ただし、要素（例えば`h2`と`h3`）によってデフォルトのスタイルがちがうことがあるので、スタイルが崩れないようにリセットしておく必要がある場合があります。
+クラスセレクタであれば指定している要素に関係なくスタイルが適応されるので、使い回しがしやすくなります。ただし、要素（例えば`ul`と`div`）によってデフォルトのスタイルがちがうことがあるので、スタイルが崩れないようにリセットしておく必要がある場合があります。
 
-```scss
-// Good
-sw-Heading2 {}
+```html
+<ul class="ns-Grid">
+</ul>
+
+<div class="ns-Grid">
+</div>
 ```
 
 クラスセレクタに対して要素セレクタを連結させるのも意味がありません。
 
 ```scss
 // Good
-..ns-Foo {}
+.ns-Foo {}
 
 // Bad
 h2.ns-Foo {}
@@ -589,21 +598,25 @@ h2.ns-Foo {}
 CSSセレクタにIDセレクタは使用しません。ページ内リンクやJavaScriptのフックとしてだけ使います。
 
 #### メディアクエリをまとめて管理しない
-メディアクエリをまとめて指定しません。そのセレクタがどのように変化していくのかを把握しにくくしてしまいます。
+メディアクエリをまとめて指定しません。そのモジュールがどのように変化していくのかを把握しにくくしてしまいます。
 
 ```scss
 // Good
-.foo {}
+.ns-Foo {}
 
 @media (min-width: 768px) {
-  .foo {}
+  .ns-Foo {}
 }
 
 // Bad
+.ns-Foo {}
+.ns-Bar {}
+.ns-Baz {}
+
 @media (min-width: 768px) {
-  .foo {}
-  .bar {}
-  .baz {}
+  .ns-Foo {}
+  .ns-Bar {}
+  .ns-Baz {}
 }
 ```
 
@@ -620,27 +633,32 @@ ul li a {}
 table th {}
 ```
 
+※上記は推奨ではなく例です。`ul a`のようなセレクタを使用してもいいというわけではありません。
+
 #### divやspanをセレクタに使用しない
 `div`や`span`は使用頻度が高く、パターンも一定ではありません。セレクタに指定すると意図しないところにスタイルが当たってしまう恐れがあります。`div`と`span`にはスタイルを指定せずに、クラスを振って指定します。
 
 ```scss
+// Good
+.ns-Foo_ChildNode {}
+
 // Bad
 div {}
 span {}
-.foo div {}
-.foo span {}
+.ns-Foo div {}
+.ns-Foo span {}
 ```
 
 ### プロパティ・ルールセット
 #### !importantを多用しない
-`!important`の使用は禁止しませんが、多用するべきではありません。例えばシングルクラスのヘルパークラスを確実に適応されるために指定したり、外部ライブラリがJavaScriptでstyle属性を指定してしまうのを上書きするためといった場合に限って使用します。
+`!important`の使用は禁止しませんが、多用するべきではありません。そのモジュール内で完結する場合にだけ使用してください。
 
 #### スタイルをリセットしない
 スタイルのリセットとは、`0`や`none`などで値を上書きすることです。スタイルのリセットが多いときは、要素にスタイルを持たせすぎていたり、早く指定しすぎている恐れがあります。
 
 ```scss
 // Bad
-.foo {
+.ns-Foo {
   border: 1px solid #ddd;
 }
 
@@ -684,17 +702,17 @@ h2 {
 ```
 
 #### 高さを指定しない
-レスポンシブでは横幅も高さも変化します。高さを指定していると余分な余白ができてしまったり、逆にコンテンツが隠れてしまう恐れがあります。
+レスポンシブでは横幅も高さも環境に応じて変化します。高さを固定していると余分な余白ができてしまったり、逆にコンテンツが隠れてしまう恐れがあります。
 
 ```scss
 // Bad
 .ns-Foo {
-  height: 1000px;
+  height: 300px;
 }
 ```
 
 #### 固定の幅を持たせない
-コンテンツは基本的に親要素に対して横幅100%の表示になるようにします。横幅を固定すると、横幅が足りなかったり、はみ出してしまう恐れがあります。
+コンテンツは基本的に親要素に対して横幅100%の表示になるようにします。横幅を固定すると横幅が足りなかったり、はみ出してしまう恐れがあります。
 
 幅を変更するときは、コンテナブロックに`max-width`を指定する、`width`のヘルパークラスを指定する、variantでサイズを指定するなどの方法があります。
 
@@ -710,9 +728,12 @@ h2 {
   width: 100%;
 }
 
+.ns-Grid_Item-col2 { width: percentage(1 / 2); }
+.ns-Grid_Item-col3 { width: percentage(1 / 3); }
+.ns-Grid_Item-col4 { width: percentage(1 / 4); }
+
 // Bad
 .sw-Button {
   width: 300px;
 }
 ```
-
