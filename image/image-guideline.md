@@ -34,19 +34,21 @@
 │   │   ├── common/
 │   │   ├── home/
 │   │   └── product-name/
-│   │       └── common/
+│   │       ├── common/
+│   │       ├── index/
+│   │       └── event/
 │   ├── js/
 │   └── svg/
 ├── index.html
 └── product-name/
-    └── index.html
+    ├── index.html
+    └── event.html
 ```
 
 - 画像フォルダ名は/assets/imgとします。
 - 画像は基本的に`/assets/img`ディレクトリに保存します。
-- `/assets/img`ディレクトリ以下にページのディレクトリ構造にあわせてフォルダを作り、画像を保存します。ホームページの画像は`/assets/img/home`ディレクトリ、product-nameページの画像は`/assets/img/product-name`に保存します。
-- サイト共通の画像は`/assets/img/common`ディレクトリに保存します。
-- 各ディレクトリ共通の画像は`/assets/img/product-name/common`のようにcommonディレクトリを作って保存します。
+- 各ディレクトリ内で共通の画像は`/assets/img/common`や`/assets/img/product-name/common`のようにcommonディレクトリを作ります。
+- 各ディクトリ内はHTMLのファイル名ごとにディレクトリを作ります。`/product-name/index.html`は`/assets/img/product-name/index`、`/product-name/event.html`は`/assets/img/product-name/event`になります。
 - アイコンフォント用のSVGファイルは`/assets/css/icon`ディレクトリに保存します。
 - インラインSVG用のSVGファイルは`/assets/svg`ディレクトリに保存します。
 - img要素で表示させるSVGファイルは`/assets/img`ディレクトリにJPGなどと同じように保存します。
