@@ -102,43 +102,104 @@ HTMLのタグや属性は大文字でも小文字でも同様に解釈されま�
 
 - [URLの終りに「/」(スラッシュ)は必要?、不要? | 海外SEO情報ブログ](https://www.suzukikenichi.com/blog/do-we-need-a-trailing-slash-at-the-end-of-url/)
 
-### インデントは半角2スペースで適切に使う
-インデントは半角2スペースに統一します。
+### 空行と改行とインデントを入れて整形する
+空行と改行とインデントのルールは以下の通りです。縦に長くなってしまいますが、どんな要素がどんな構造で配置されているのかが把握しやすいようにします。
 
-また、ulとliタグのような親子関係、thとtdタグのような兄弟関係にあるタグは改行とインデントを適切に使います。
+- `body`、`header`、`nav`、`main`、`aside`、`footer`、`section`タグは空行を1つ入れて区分します。
+- 要素が入れ子になったら改行とインデントを入れます。
+- 入れ子内の直近の子要素は要素ごとに改行を入れて同じ位置にインデントします。
+
+空行の例です。
 
 ```html
-<!-- Bad -->
-<ul>
-<li></li>
-<li></li>
-<ul>
+<body>
 
-<table>
-<thead>
-<tr>
-<th></th>
-<td></td>
-</tr>
-</thead>
-</table>
+  <header>
+    <h1></h1>
+  </header>
+
+  <main>
+
+    <header></header>
+
+    <section>
+      <h2></h2>
+    </section>
+
+    <section>
+      <h2></h2>
+    </section>
+
+    <footer></footer>
+
+  </main>
+
+</body>
 ```
 
-```html
-<!-- Good -->
-<ul>
-  <li></li>
-  <li></li>
-<ul>
+改行とインデントの例です。
 
-<table>
-  <thead>
-    <tr>
-      <th></th>
-      <td></td>
-    </tr>
-  </thead>
-</table>
+```html
+<section>
+  <h2>
+    <a href="#"></a>
+  </h2>
+  <div>
+    <img src="#" alt="">
+  </div>
+  <div>
+    <p></p>
+    <p>
+      <span></span>
+      <span></span>
+    </p>
+  </div>
+  <ul>
+    <li>
+      <a href="#">
+        <span></span>
+      </a>
+    </li>
+    <li>
+      <a href="#">
+        <span></span>
+      </a>
+    </li>
+  </ul>
+</section>
+```
+
+改行とインデントの例外として、直近の子要素が1つ以下・親要素にテキストがない場合に限り、改行を入れなくてもかまいません。
+
+```html
+<!-- 改行なしでもOK -->
+<p><a href="#">テキスト</a></p>
+<ul>
+  <li><a href="#">リンク</a></li>
+  <li><a href="#">リンク</a></li>
+</ul>
+
+<!-- 改行が必要 -->
+<p>
+  <a href="#">
+    リンク
+    <span class="icon" aria-hidden="true"></span>
+  </a>
+</p>
+<ul>
+  <li>
+    <a href="#">
+      リンク
+      <span class="icon" aria-hidden="true"></span>
+    </a>
+  </li>
+  <li>
+    <a href="#">
+      リンク
+      <span class="icon" aria-hidden="true"></span>
+    </a>
+  </li>
+</ul>
 ```
 
 ### ルート相対パスを使う
