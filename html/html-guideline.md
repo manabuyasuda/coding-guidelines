@@ -344,6 +344,11 @@ UAが対応しきれていないrole属性を指定するケースもありま�
 | `true`      | セット内の現在の項目を表す。                | 汎用的に現在地を示す。                                                                                               |
 | `false`     | セット内の現在の項目を表わさない。           | デフォルト。                                                                                                        |
 
+参考サイト
+
+- [Accessible Rich Internet Applications (WAI-ARIA) 1.1 日本語訳](https://momdo.github.io/wai-aria-1.1/#aria-current)
+- [Introduction to Web Accessibility | Web Accessibility Initiative (WAI) | W3C](https://www.w3.org/WAI/fundamentals/accessibility-intro/)
+
 ## HTMLタグ
 ### h1はドキュメント内に1つに制限する
 WHATWGの仕様ではドキュメント内にh1を複数使っても問題はありません。Googleも複数使ってもよいと名言していますが、UAが`section > h1`のようなアウトラインアルゴリズムに対応していない場合、すべてがh1だと解釈されてしまう恐れがあります。
