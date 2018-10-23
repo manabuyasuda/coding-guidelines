@@ -34,7 +34,7 @@
 
 `<Subject>`はコミットのタイトル、`<Body>`はコミットの本文、`<Footer>`はコミットの補足です。  
 `<Prefix>:`と`<Subject>`の間は半角スペースを1つ入れてください。  
-`<Subject>`と`<body>`の間は空行を1つ挟んでください。空行がないと、CLIでは`<Subject>`と`<body>`がつながって表示されてしまいます。
+`<Subject>`と`<body>`の間は空行を1つ挟んでください。空行がないと、`git log --oneline`もしくは`git log --pretty=oneline --abbrev-commit`を実行したときに`<Subject>`と`<body>`が1行になって出力されてしまいます。視覚的に分離することで、読みやすくするという目的もあります。
 
 
 ## `<Prefix>` 何をしたのかを動詞で伝える
