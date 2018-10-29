@@ -20,5 +20,7 @@
   - [その他のCSSガイドライン](css/another-css-guidelines.md)
 - [画像](image/README.md)
   - [画像のガイドライン](image/image-guideline.md)
+- [Git](git/README.md)
+  - [コミットメッセージのガイドライン](git/commit-message.md)
 - [共通](common/README.md)
   - [フォーマット](common/format.md)
