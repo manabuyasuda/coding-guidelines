@@ -1,3 +1,3 @@
 # 画像のガイドライン
 
-- [画像のガイドライン](image/image-guideline.md)
+- [画像のガイドライン](image-guideline.md)
