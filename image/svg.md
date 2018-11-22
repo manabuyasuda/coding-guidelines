@@ -76,7 +76,7 @@
 - viewBox属性
 
 ### gulp-imageminの設定例
-gulp-imageminを使用したときに設置例です。
+gulp-imageminを使用したときに設定例です。
 
 ```js
 const imagemin = require('gulp-imagemin');
