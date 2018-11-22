@@ -84,7 +84,6 @@ const imageminMozjpeg = require('imagemin-mozjpeg');
 const imageminPngquant = require('imagemin-pngquant');
 
 gulp.task('image', () => gulp.src('src/assets/img/**/*.{png,jpg,gif,svg}')
-  .pipe(changed('htdocs/assets/img/'))
   .pipe(plumber({
     errorHandler(err) {
       console.log(err.messageFormatted);
