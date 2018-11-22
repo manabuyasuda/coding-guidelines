@@ -3,11 +3,11 @@
 ## SVGの作成時に注意すること
 
 ### サイズ削減のためにすること
-- オブジェクト→パス→単純化でアンカーポイントの数を最小化する（見た目を損なわない範囲に収めます）
+- 「オブジェクト」→「パス」→「単純化」でアンカーポイントの数を最小化する（見た目を損なわない程度に留めます）
 - 非表示にしているレイヤーを削除する（非表示レイヤーも書き出されます）
 - 1回しか使わないシンボル図形は「シンボルへのリンクの解除」をする
 - 「アピアランス」「ブラシ」「ブレンド」「エンベロープ」は分割されてしまうため最低限にする
-- 「メッシュグラデーショ」「画像ブラシ」「演算」「レイヤー効果」はラスタライズされてしまうため最低限にする（ラスタライズされても表示に問題がないか出力データを確認する）
+- 「メッシュグラデーション」「画像ブラシ」「演算」「レイヤー効果」はラスタライズされてしまうため最低限にする（ラスタライズされても表示に問題がないか出力データを確認します）
 - 「変形」「回転」「拡大縮小」などを最低限にする（transform属性に変換されます）
 
 ### 正常に表示するためにすること
@@ -33,7 +33,7 @@
 
 ## コードの最適化をする
 不要なコードは削除してください。Gulpなどのツールで自動的に削除するのを推奨します。  
-最適化の前後で以下のように変更されます。
+最適化をすると以下のように変更されます。
 
 ```html
 <!-- 最適化前 -->
@@ -59,15 +59,15 @@
 - `<?xml`から始まるXML宣言の`version="1.0"`（バージョンが1.0であれば省略可）
 - `<?xml`から始まるXML宣言の`encoding="utf-8"`（UTF-8で書き出している場合は省略可）
 - `<?xml`から始まるXML宣言の`standalone="no"`
-- `<!-- Generator: Adobe Illustrator`から始まるコメント（不要）
-- `<!DOCTYPE svg PUBLIC`から始める文書型宣言（SVG1.1では非推奨）
+- `<!-- Generator: Adobe Illustrator`から始まるコメント
+- `<!DOCTYPE svg PUBLIC`から始まる文書型宣言（SVG1.1では非推奨）
 - `<svg>`タグの`xmlns:a=""`
-- `<svg>`タグの`x=""`と`y=""`が両方とも`0(px)`の場合
+- `<svg>`タグの`x=""`と`y=""`（両方とも`0(px)`の場合）
 - `<svg>`タグの`enable-background=""`
 - `<svg>`タグの`xml:space="preserve"`
 
 ### 必須の属性を確認する
-`<svg>`タグで必須の属性です。表示崩れの原因となるので、必ず指定してください。
+`<svg>`タグで必須の属性です。表示崩れの原因にもなるので、必ず指定してください。
 
 - `xmlns="http://www.w3.org/2000/svg"`（SVG名前空間宣言）
 - `xmlns:xlink="http://www.w3.org/1999/xlink"`（XLink名前空間宣言）
@@ -76,7 +76,13 @@
 - viewBox属性
 
 ### gulp-imageminの設定例
-```
+gulp-imageminを使用したときに設置例です。
+
+```js
+const imagemin = require('gulp-imagemin');
+const imageminMozjpeg = require('imagemin-mozjpeg');
+const imageminPngquant = require('imagemin-pngquant');
+
 gulp.task('image', () => gulp.src('src/assets/img/**/*.{png,jpg,gif,svg}')
   .pipe(changed('htdocs/assets/img/'))
   .pipe(plumber({
@@ -118,7 +124,7 @@ gulp.task('image', () => gulp.src('src/assets/img/**/*.{png,jpg,gif,svg}')
 ## imgタグでSVGを表示する
 pngで表示していたような画像の代わりとしてSVGを使うのがいちばん手軽な方法です。通常の画像と同じように`<img>`タグで指定します。
 
-```
+```html
 <img src="image.svg" alt="">
 ```
 
@@ -127,7 +133,7 @@ pngで表示していたような画像の代わりとしてSVGを使うのが�
 ### フルードイメージ
 `<img>`タグと`<object>`タグをフルードイメージにする場合はCSSで以下のように指定します。
 
-```
+```css
 /* 属性値が.svgで終わる要素に適応 */
 [src$=".svg"],
 [data$=".svg"] {
@@ -138,9 +144,9 @@ pngで表示していたような画像の代わりとしてSVGを使うのが�
 ```
 
 ### バグフィックス（IEとAndroid）
-SVGファイル内でwidthとheight属性が指定されていない場合にIEとAndroidでアスペクト比がおかしくなることがあります。widthとheight属性を指定し直します。
+SVGファイル内でwidthとheight属性が指定されていない場合にIEとAndroidでアスペクト比がおかしくなることがあります。viewBox属性値をもとにwidthとheight属性を追加します。
 
-`preserveAspectRatio="none"`をSVGファイルに指定して直す方法もあります。仕様上、viewBox属性のアスペクト比とwidthとheight属性でのアスペクト比が異なる場合、アスペクト比と維持しながらスケーリングし、中央寄せで表示されます。preserveAspectRatio属性はこの挙動を変更するもので、noneと指定することでHTML側で指定したサイズでviewBoxがフィットするようになります。
+`preserveAspectRatio="none"`をSVGファイルに指定して直す方法もあります。仕様上、viewBox属性のアスペクト比とwidthとheight属性のアスペクト比が異なる場合、アスペクト比を維持しながらスケーリングし、中央寄せで表示されます。preserveAspectRatio属性はこの挙動を変更するもので、noneと指定することでHTML側で指定したサイズでviewBoxがフィットするようになります。
 
 ### フォールバック（IE8）
 フォールバックは処理が冗長になるので、IE8に対応するのであればSVGは使わないようにしましょう。
@@ -150,7 +156,7 @@ SVG非対応ブラウザ向けのフォールバックにはHTMLでの対応とJ
 #### objectタグでフォールバックする
 HTML側で対応する場合は`<img>`タグではなく、`<object>`タグを使います。`<object>`タグは下記のようにフォールバックを含めた記述ができます。
 
-```
+```html
 <object data="image.svg" type="image/svg+xml" width="100" height="100">
 　<object data="fallback.png" type="image/png" width="100" height="100">
 　</object>
@@ -160,7 +166,7 @@ HTML側で対応する場合は`<img>`タグではなく、`<object>`タグを�
 #### JavaScriptでフォールバックする
 SVG非対応ブラウザのときには.svgを.pngにJavaScriptで置換します。
 
-```
+```js
 if(!window.SVGSVGElement){ //SVG非対応ブラウザの判別
   $('img[src*="svg"]').attr('src', function() {
     return $(this).attr('src').replace('.svg','.png'); //拡張子を置換
@@ -168,11 +174,11 @@ if(!window.SVGSVGElement){ //SVG非対応ブラウザの判別
 }
 ```
 
-フォールバック画像の作成はsvg2pngなどで自動的に生成することができます。
+フォールバック画像の作成は[svg2png](https://github.com/domenic/svg2png)などで自動的に生成することができます。
 
-`<a>`タグを`<object>`タグでラップする場合、リンクがクリックできなくなります（`<img>`タグでは問題ありません）。
+`<a>`タグを`<object>`タグでラップするとリンクがクリックできなくなります（`<img>`タグでは問題ありません）。
 
-```
+```html
 <a href="#">
   <object data="image.svg" type="image/svg+xml" width="100" height="100">
 　  <object data="fallback.png" type="image/png" width="100" height="100">
@@ -181,9 +187,9 @@ if(!window.SVGSVGElement){ //SVG非対応ブラウザの判別
 </a>
 ```
 
-CSSでは以下のように指定するとリンクをクリックできるようになります。
+CSSで以下のように指定するとリンクをクリックできるようになります。
 
-```
+```css
 a {
 　　display: inline-block; /* もしくは`display:block;` */
 }
@@ -196,7 +202,7 @@ object {
 ## background-imageでSVGを表示する
 通常の画像と同じくbackground-imageプロパティでSVGを表示させることができます。
 
-```
+```css
 .bg {
   background-image: url("image.svg");
 }
@@ -204,7 +210,7 @@ object {
 
 フォールバックをする場合はフォールバック用のpng画像を先に指定します。
 
-```
+```css
 .bg {
   background-image: url("fallback.png");
   background-image: url("image.svg"), none;
@@ -218,7 +224,7 @@ SVGは`<symbol>`タグと`<use>`タグでコンポーネント化ができます
 
 `<symbol>`タグは`<svg>`タグの中に記述し、その中にコンポーネント化したい要素を置きます。`<symbol>`タグには固有のid属性を指定しておきます。`<symbol>`要素内に記述したSVGは表示されず、`<use>`タグで参照して表示します。
 
-```
+```html
 <svg>
   <symbol id="facebook" viewBox="0 0 110 110">
     <title id="facebook-title">Facebook</title>
@@ -229,7 +235,7 @@ SVGは`<symbol>`タグと`<use>`タグでコンポーネント化ができます
 
 `<use>`タグを使ってSVGを呼び出します。role属性やaria-labelledby属性でアクセシブルにしている点に注意してください。
 
-```
+```html
 <svg viewBox="0 0 110 110" role="img" aria-labelledby="facebook-title">
   <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#facebook"></use>
 </svg>
@@ -238,7 +244,7 @@ SVGは`<symbol>`タグと`<use>`タグでコンポーネント化ができます
 CSSは以下のように指定すると、余分な余白をなくすことができます。  
 正方形のアイコンは`width`と`height`を`1em`にします。長方形の場合は小さいほうを大きいほうの相対値（em）で指定します。最終的なサイズは`font-size`に`em`を指定して調整します。
 
-```
+```css
 .Icon {
   display: inline-block;
   vertical-align: middle;
@@ -265,18 +271,18 @@ npm install svg4everybody
 
 svg4everybodyを読み込んだら実行が必要です（下記はES2015の例）。
 
-```
+```js
 import svg4everybody from 'svg4everybody';
 
 svg4everybody();
 ```
 
 ### gulp-svg-spriteでSVGスプライトを生成する
-SVGスプライトをアイコンごとに作成していると、時間がかかりケアレスミスが起きる可能性があります。「[gulp-svg-sprite](https://github.com/jkphl/gulp-svg-sprite)」を使って自動で生成するようにしましょう。
+SVGスプライトをアイコンごとに手動で作成していると、時間がかかりケアレスミスも起きる可能性があります。「[gulp-svg-sprite](https://github.com/jkphl/gulp-svg-sprite)」を使って自動で生成するようにしましょう。
 
 以下の例では、`src/assets/svg/`に.svgを保存すると、`htdocs/assets/svg/`にsprite.svgというファイル名でSVGスプライトがまとめて生成されます。
 
-```
+```js
 const svgSprite = require('gulp-svg-sprite');
 
 gulp.task('svgSprite', () => gulp.src('src/assets/svg/**/*.svg')
@@ -317,29 +323,30 @@ gulp.task('svgSprite', () => gulp.src('src/assets/svg/**/*.svg')
 
 以下のように参照します。
 
-```
+```html
 <svg role="img">
   <use xlink:href="/assets/svg/sprite.svg#facebook"></use>
 </svg>
 ```
 
 ## svgタグでSVGを表示する
-HTML内に`<svg>`タグで記述するインラインSVGは、SVGの機能のすべてを使うことができます。ただし、HTMLファイル内にSVGコードを貼る必要があり、管理がやや複雑になりがちです。`<img>`タグやbackground-imageプロパティ、SVGスプライトで指定するのが適切でない場合に使うようにします。  
+HTML内に`<svg>`タグで記述するインラインSVGは、SVGの機能のすべてを使うことができます。ただし、HTMLファイル内にSVGコードを貼る必要があり、インクルードをするにしても管理がやや複雑になりがちです。`<img>`タグやbackground-imageプロパティ、SVGスプライトで指定するのが適切でない場合に使うようにします。  
 以下のような条件に合致する場合に使うといいでしょう。
 
 - 単色ではない
 - `<svg>`タグに複数のリンクを設定したい
-- `<svg>`タグに複数のalt属性などを設定したい
-- アニメーションしたい
+- `<svg>`タグに複数のテキスト情報を設定したい
+- JavaScriptで動的に値を変更したい
+- アニメーションさせたい
 
 ### svgタグのアクセシビリティ
-SVG単体ではスクリーンリーダーで適切に読み上げられないため、WAI-ARIAを使ってアクセシブルにする必要があります。
+SVG単体では、`<title>`タグと`<desc>`がスクリーンリーダーで適切に読み上げられないため、WAI-ARIAを使ってアクセシブルにする必要があります。
 
 - `<title>`タグ（タイトル）と`<desc>`タグ（説明）を追加する
 - `<title>`タグと`<desc>`タグのid属性値を`aria-labelledby=""`に指定する
 - 適切なrole属性（`role="img"`や`role="link"`など）を指定する
 
-```
+```html
 <svg>
   <symbol role="img" aria-labelledby="title desc" viewBox="0 0 110 110">
     <title id="title">タイトルのテキスト</title>
@@ -352,7 +359,7 @@ SVG単体ではスクリーンリーダーで適切に読み上げられない�
 ## SVGにリンクを設定する
 インラインSVGにリンクを貼る場合、`<a>`タグで`<svg>`タグを囲んでも動作しません。`<svg>`タグ内の要素を`<a>`タグで囲み、xlink:href属性でリンク先を指定します。
 
-```
+```html
 <svg>
   <a xlink:href="#">
     <path></path>
