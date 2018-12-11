@@ -18,6 +18,8 @@
   - [ECSS](css/how-to-ecss.md)
   - [CSSクラス名リスト](css/css-naming-list.md)
   - [その他のCSSガイドライン](css/another-css-guidelines.md)
+- [JS](js/README.md)
+  - [JSのガイドライン](js/js-guideline.md)
 - [画像](image/README.md)
   - [画像のガイドライン](image/image-guideline.md)
   - [SVGのガイドライン](image/svg.md)
