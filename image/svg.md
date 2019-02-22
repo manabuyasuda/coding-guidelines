@@ -139,13 +139,10 @@ pngで表示していたような画像の代わりとしてSVGを使うのが�
 使用するSVGファイル内にはwidthとheight、viewBox属性を必ず指定します（IEとAndroid対応）。
 
 ### フルードイメージ
-`<img>`タグと`<object>`タグをフルードイメージにする場合はCSSで以下のように指定します。
+`<img>`タグでフルードイメージにする場合は、JPGやPNGなどと同じようにCSSで以下のように指定します。
 
 ```css
-/* 属性値が.svgで終わる要素に適応 */
-[src$=".svg"],
-[data$=".svg"] {
-  width: 100%; /* IE対応 */
+img {
   max-width: 100%;
   height: auto;
 }
